@@ -51,7 +51,7 @@ The purpose of this project is to build a `ci/cd pipeline` with `Gitlab`. I will
     - GitLab generates an `initial secure password` for you. It is stored in `/etc/gitlab/initial_root_password`
     - On the login page, enter `Username: root` and `Password: [the password listed on /etc/gitlab/initial_root_password]`
 
-    <p align="center"> <img src="images/login.png"> </p>
+        <p align="center"> <img src="images/login.png"> </p>
 
 
 ## Create Gitlab Repository
@@ -294,5 +294,5 @@ We are going to configure the GitLab CI/CD pipeline. The pipeline will build a D
 
         # output
         CONTAINER ID   IMAGE                        COMMAND                  CREATED        STATUS        PORTS                               NAMES
-        fb86cae159e2   docker-user/my-app:9f4a2e61   "/docker-entrypoint.…"   23 hours ago   Up 23 hours   0.0.0.0:80->80/tcp, :::80->80/tcp   my-app
+        fb86cae159e2   docker-user/my-app:9f4a2e61  "/docker-entrypoint.…"   23 hours ago   Up 23 hours   0.0.0.0:80->80/tcp, :::80->80/tcp   my-app
         ```
