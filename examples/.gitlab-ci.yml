@@ -1,0 +1,48 @@
+stages:
+  - test
+  - push
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_IMAGE: <docker-username>/<image-name>:$CI_COMMIT_SHORT_SHA
+  KUBECONFIG: /.kube/config
+
+services:
+  - docker:dind
+
+test:
+  stage: test
+  image: golang:1.21.11-alpine
+  script:
+    - echo "Running tests..."
+    - go test -v
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID'
+    - if: '$CI_COMMIT_BRANCH'
+
+push:
+  stage: push
+  script:
+    - echo "Building the project..."
+    - docker build -t $DOCKER_IMAGE .
+    - echo "Pushing the image..."
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin
+    - docker push $DOCKER_IMAGE
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    
+deploy_production:
+  stage: deploy
+  image: 
+    name: bitnami/kubectl:1.29.6
+    entrypoint: [""]
+  before_script:
+    - echo "$KUBECONFIG_CONTENT" | base64 -d > $KUBECONFIG
+    - export KUBECONFIG=$KUBECONFIG
+  script:
+    - echo "Deploying to production..."
+    - kubectl set image deployment/deployment-wisteria wisteria=$DOCKER_IMAGE --namespace=wisteria
+  rules:
+    - if: '$CI_COMMIT_TAG'
