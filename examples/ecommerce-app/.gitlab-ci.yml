@@ -1,0 +1,51 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+build:
+  stage: build
+  image: golang:1.21.11-alpine
+  script:
+    - go mod tidy
+    - go build -o ecommerce-app
+  artifacts:
+    paths:
+      - ecommerce-app
+
+unit_tests:
+  stage: test
+  image: golang:1.21.11-alpine
+  script:
+    - go test ./...
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+
+ui_tests:
+  stage: test
+  image: selenium/standalone-chrome
+  services:
+    - name: selenium/standalone-chrome
+      alias: selenium
+  script:
+    - apt-get update
+    - apt-get install -y python3 python3-pip
+    - pip3 install selenium
+    - python3 -m unittest discover -s ui_tests
+
+docker_build:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t ecommerce-app .
+    - docker run -d -p 8080:8080 ecommerce-app
+  only:
+    - master
