@@ -39,7 +39,7 @@ The purpose of this project is to build a `ci/cd pipeline` with `Gitlab`. I will
     - Open config file: `sudo nano /etc/gitlab/gitlab.rb`
     - Match `external_url` with your `domain` and make sure to change `http` to `https` to automatically redirect users to the site protected by the Let’s Encrypt certificate
     - Fill `letsencrypt['contact_emails']` with your email. In case there are problems with your domain, Let’s Encrypt project can use to contact you
-    - (**Optional**) If you prefer using your own TLS certs, you can follow this documentation: https://docs.gitlab.com/omnibus/settings/ssl/
+    - (**Optional**) If you prefer using your own TLS certs, you can follow this documentation: https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually
 
 4. Reconfigure GitLab
     ```bash
